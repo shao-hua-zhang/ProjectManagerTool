@@ -7,6 +7,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProjectRepository extends CrudRepository<Project, Long> { // repository就是定义表（project）的各种功能
 
+    Project findByProjectIdentifier(String projectId);
+
     @Override
-    Iterable<Project> findAllById(Iterable<Long> iterable);
+    Iterable<Project> findAll();
+
+    @Override
+    void delete(Project project);
+
+    
 }

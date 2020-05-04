@@ -16,7 +16,7 @@ public class Project { // 构建project这个表， 里面包换表的各种信�
     private String projectName;
     @NotBlank(message = "Project Identifier is required")
     @Size(min = 4, max = 5, message = "Please use 4 to 5 characters")
-    @Column(updatable = false, unique = true)
+    @Column(updatable = false, unique = true) // constrain on the database layer, not on the map validation service layer
     private String projectIdentifier;
     @NotBlank(message = "Project description is required")
     private String description;

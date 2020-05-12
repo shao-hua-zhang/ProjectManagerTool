@@ -1,4 +1,5 @@
-import { GET_PROJECTS, GET_PROJECT } from "../actions/types";
+import { GET_PROJECTS, GET_PROJECT, DELETE_PROJECT } from "../actions/types";
+import { bindActionCreators } from "redux";
 
 const initialState = {
   projects: [],
@@ -16,6 +17,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         project: action.payload,
+      };
+    case DELETE_PROJECT:
+      return {
+        ...state,
+        projects: action.projects.filter(
+          (project) => project.projectIdentifier != action.payload
+        ),
       };
     default:
       return state;

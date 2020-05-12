@@ -1,7 +1,9 @@
 package io.shaohua.ppmtool.services;
 
+import io.shaohua.ppmtool.domain.Backlog;
 import io.shaohua.ppmtool.domain.Project;
 import io.shaohua.ppmtool.exceptions.ProjectIdException;
+import io.shaohua.ppmtool.repositories.BacklogRepository;
 import io.shaohua.ppmtool.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +14,26 @@ public class ProjectService {
     @Autowired
     private ProjectRepository projectRepository; // 在 service layer 控制自动连线问题， 而controller只要负责逻辑问题
 
+    @Autowired
+    private BacklogRepository backlogRepository;
+
     public Project saveOrUpdateProject(Project project) {
         // Logic handle duplicated id exception
         try {
             project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
+
+            if(project.getId()==null){ // create new project, also create a backlog
+                Backlog backlog = new Backlog();
+                project.setBacklog(backlog);
+                backlog.setProject(project);
+                backlog.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
+            }
+
+            if(project.getId()!=null){ // if update project, no need to create backlog
+                project.setBacklog(backlogRepository.findByProjectIdentifier(project.getProjectIdentifier().toUpperCase()));
+            }
+
+
             return projectRepository.save(project);
         } catch (Exception e){
              throw new ProjectIdException("Project ID '" + project.getProjectIdentifier().toUpperCase() + "' already exists");
